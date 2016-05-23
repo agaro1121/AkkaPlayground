@@ -25,7 +25,7 @@ object StreamsPractice extends App {
 
   //fan in shape - more inputs and 1(less?) output
 
-  val composite = Source.combine(numbers,strings)
+//  val composite = Source.combine(numbers,strings)
   
 
 

@@ -92,6 +92,7 @@ hs_err_pid*
 # User-specific stuff:
 .idea
 #.idea/workspace.xml
+/project/target
 #.idea/tasks.xml
 #.idea/dictionaries
 #.idea/vcs.xml
