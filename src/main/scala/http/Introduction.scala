@@ -1,16 +1,21 @@
 package http
 
+import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.http.scaladsl._
+import akka.http.scaladsl.model.HttpHeader.ParsingResult
 import akka.http.scaladsl.model._
+import akka.http.scaladsl.model.headers.RawHeader
 import akka.stream.ActorMaterializer
 import akka.http.scaladsl.server.Directives._
-import akka.stream.scaladsl.{Sink, Source}
+import akka.stream.scaladsl.{Flow, Sink, Source}
 import akka.util.ByteString
+import com.hunorkovacs.koauth.domain.KoauthRequest
+import com.hunorkovacs.koauth.service.consumer.DefaultConsumerService
 
 import scala.concurrent.Future
 import scala.io.StdIn
-import scala.util.Random
+import scala.util.{Failure, Random, Success}
 
 /**
   * Created by Hierro on 5/22/16.
@@ -79,8 +84,7 @@ object IntroductionWithHttpClientAndPrintsResponseStuff extends App {
   import CommonReqs._
 
   val responseFuture: Future[HttpResponse] =
-      Http().singleRequest(HttpRequest(uri = "http://akka.io"))
-//    Http().singleRequest(HttpRequest(uri = "http://localhost:8080/hello"))
+    Http().singleRequest(HttpRequest(uri = "http://akka.io"))
 
   /*responseFuture.onComplete {
     println
@@ -101,10 +105,10 @@ object IntroductionWithHttpClientAndPrintsResponseStuff extends App {
     }
   }*/
 
-  responseFuture.onComplete{ t => //prints body in a stream-safe way
-     t.map{ r =>
-       r.entity.dataBytes.map(_.utf8String).runWith(Sink.foreach(println))
-     }
+  responseFuture.onComplete { t => //prints body in a stream-safe way
+    t.map { r =>
+      r.entity.dataBytes.map(_.utf8String).runWith(Sink.foreach(println))
+    }
   }
 }
 
@@ -127,6 +131,7 @@ object RoutingDSLSimpleServer extends App {
     .flatMap(_.unbind()) // trigger unbinding from the port
     .onComplete(_ ⇒ actorSystem.terminate()) // and shutdown when done
 }
+
 object RoutingDSLSimpleServerWithMatchers1 extends App {
 
   import CommonReqs._
@@ -138,7 +143,7 @@ object RoutingDSLSimpleServerWithMatchers1 extends App {
     http://localhost:8080/foo/bar/X/edit
    */
   val route =
-    path("foo"/"bar"/"X" ~ IntNumber.? / ("edit" | "create") ) { x =>
+    path("foo" / "bar" / "X" ~ IntNumber.? / ("edit" | "create")) { x =>
       get {
         complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
       }
@@ -152,6 +157,7 @@ object RoutingDSLSimpleServerWithMatchers1 extends App {
     .flatMap(_.unbind()) // trigger unbinding from the port
     .onComplete(_ ⇒ actorSystem.terminate()) // and shutdown when done
 }
+
 object RoutingDSLSimpleServerWithMatchers2 extends App {
 
   import CommonReqs._
@@ -174,6 +180,7 @@ object RoutingDSLSimpleServerWithMatchers2 extends App {
     .flatMap(_.unbind()) // trigger unbinding from the port
     .onComplete(_ ⇒ actorSystem.terminate()) // and shutdown when done
 }
+
 object RoutingDSLSimpleServerWithMatchers2WithValidation extends App {
 
   import CommonReqs._
@@ -202,3 +209,118 @@ object RoutingDSLSimpleServerWithMatchers2WithValidation extends App {
     .onComplete(_ ⇒ actorSystem.terminate()) // and shutdown when done
 }
 
+object RoutingDSLPathEnd extends App {
+
+  import CommonReqs._
+
+  val route =
+    pathPrefix("foo") {
+      // curl http://localhost:8080/foo //"/foo/" does not work
+      pathEnd {
+        complete("/foo")
+      } ~
+        path("bar") {
+          complete("/foo/bar")
+        }
+    }
+
+  val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
+  println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
+  StdIn.readLine() // let it run until user presses return
+  bindingFuture
+    .flatMap(_.unbind()) // trigger unbinding from the port
+    .onComplete(_ ⇒ actorSystem.terminate()) // and shutdown when done
+}
+
+object RoutingDSLPathEndOrSlash extends App {
+
+  import CommonReqs._
+
+  /*
+  *curl http://localhost:8080/foo
+  *curl http://localhost:8080/foo/
+  * */
+  val route =
+    pathPrefix("foo") {
+      pathEndOrSingleSlash {
+        complete("/foo")
+      } ~
+        path("bar") {
+          complete("/foo/bar")
+        }
+    }
+
+  val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
+  println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
+  StdIn.readLine() // let it run until user presses return
+  bindingFuture
+    .flatMap(_.unbind()) // trigger unbinding from the port
+    .onComplete(_ ⇒ actorSystem.terminate()) // and shutdown when done
+}
+
+object RoutingDSLRawPathPrefix extends App {
+
+  import CommonReqs._
+
+  val completeWithUnmatchedPath =
+    extractUnmatchedPath { p =>
+      complete(p.toString)
+    }
+
+  /*
+  * curl http://localhost:8080/foobar //prints anything after bar
+  * curl http://localhost:8080/foodoo //prints anything after doo
+  *
+  * Doesn't do slashes for you
+  * */
+  val route =
+    pathPrefix("foo") {
+      rawPathPrefix("bar") {
+        completeWithUnmatchedPath
+      } ~
+        rawPathPrefix("doo") {
+          completeWithUnmatchedPath
+        }
+    }
+
+  val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
+  println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
+  StdIn.readLine() // let it run until user presses return
+  bindingFuture
+    .flatMap(_.unbind()) // trigger unbinding from the port
+    .onComplete(_ ⇒ actorSystem.terminate()) // and shutdown when done
+}
+
+object TwitterStreamClient extends App {
+
+  import CommonReqs._
+
+  val consumerKey = ""
+  val consumerSecret = ""
+  val accessToken = ""
+  val accessTokenSecret = ""
+
+  val body = "track=TheFlash"
+
+  val header = RawHeader("Authorization",
+    s"OAuth oauth_signature_method=HMAC-SHA1," +
+      s"oauth_signature=," + //changes
+      s"oauth_consumer_key=$consumerKey," +
+      s"oauth_version=1.0," +
+      s"oauth_token=$accessToken," +
+      s"oauth_timestamp=," + //changes
+      s"oauth_nonce=" //changes
+  )
+  val connectionFlow = Http().outgoingConnectionHttps("stream.twitter.com", 443)
+  val httpRequest = HttpRequest(
+//    entity = HttpEntity(contentType = MediaTypes.`application/x-www-form-urlencoded`.withCharset(HttpCharsets.`UTF-8`), data = ByteString(body)),
+    method = HttpMethods.POST,
+    headers = List(header),
+    uri = "/1.1/statuses/sample.json"
+  )
+
+  Source.single(httpRequest)
+    .via(connectionFlow)
+    .runForeach { d => println(d.entity.dataBytes.runForeach(s => println(s.utf8String))) }
+
+}

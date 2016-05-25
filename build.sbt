@@ -33,3 +33,5 @@ libraryDependencies += "com.typesafe.akka" %% "akka-http-spray-json-experimental
 libraryDependencies += "com.typesafe.akka" %% "akka-http-xml-experimental" % akkaVersion
 libraryDependencies += "com.typesafe.akka" %% "akka-persistence-query-experimental" % akkaVersion
 libraryDependencies += "com.typesafe.akka" %% "akka-typed-experimental" % akkaVersion
+
+libraryDependencies += "com.hunorkovacs" %% "koauth" % "1.1.0"
