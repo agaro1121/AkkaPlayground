@@ -321,6 +321,6 @@ object TwitterStreamClient extends App {
 
   Source.single(httpRequest)
     .via(connectionFlow)
-    .runForeach { d => println(d.entity.dataBytes.runForeach(s => println(s.utf8String))) }
+    .runForeach { d => d.entity.dataBytes.runForeach(s => println(s.utf8String)) }
 
 }
