@@ -14,7 +14,6 @@ import scala.util.Try
   * Created by Hierro on 5/22/16.
   */
 object LowLevelApI extends App {
-  import CommonReqs._
 
   val serverSource: Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
     Http().bind(interface = "localhost", port = 8080)
@@ -26,7 +25,6 @@ object LowLevelApI extends App {
 }
 
 object LowLevelAPIWithRoutes extends App {
-  import CommonReqs._
 
   val serverSource = Http().bind(interface = "localhost", port = 8080)
 
@@ -56,7 +54,6 @@ object LowLevelAPIWithRoutes extends App {
 }
 
 object ConnectionPoolFail extends App {
-  import CommonReqs._
 
   val poolClientFlow = Http().cachedHostConnectionPool[Int]("akka.io") //host being contacted
   val responseFuture: Future[(Try[HttpResponse], Int)] =

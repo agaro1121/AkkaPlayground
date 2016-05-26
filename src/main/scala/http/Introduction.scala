@@ -20,17 +20,7 @@ import scala.util.{Failure, Random, Success}
 /**
   * Created by Hierro on 5/22/16.
   */
-object CommonReqs {
-  implicit val actorSystem = ActorSystem("QuickStartGuide")
-  implicit val actorMaterializer = ActorMaterializer()
-  implicit val executionContext = actorSystem.dispatcher
-
-}
-
-
 object Introduction extends App {
-
-  import CommonReqs._
 
   val route =
     path("hello") {
@@ -53,7 +43,6 @@ object Introduction extends App {
   **/
 object IntroductionWithStreams extends App {
 
-  import CommonReqs._
 
   val numbers = Source.fromIterator(() =>
     Iterator.continually(Random.nextInt()))
@@ -81,7 +70,6 @@ object IntroductionWithStreams extends App {
 
 object IntroductionWithHttpClientAndPrintsResponseStuff extends App {
 
-  import CommonReqs._
 
   val responseFuture: Future[HttpResponse] =
     Http().singleRequest(HttpRequest(uri = "http://akka.io"))
@@ -114,7 +102,6 @@ object IntroductionWithHttpClientAndPrintsResponseStuff extends App {
 
 object RoutingDSLSimpleServer extends App {
 
-  import CommonReqs._
 
   val route =
     path("hello") {
@@ -134,7 +121,6 @@ object RoutingDSLSimpleServer extends App {
 
 object RoutingDSLSimpleServerWithMatchers1 extends App {
 
-  import CommonReqs._
 
   /*
     http://localhost:8080/foo/bar/X42/edit
@@ -160,7 +146,6 @@ object RoutingDSLSimpleServerWithMatchers1 extends App {
 
 object RoutingDSLSimpleServerWithMatchers2 extends App {
 
-  import CommonReqs._
 
   case class Color(name: String, red: Int, green: Int, blue: Int)
 
@@ -183,7 +168,6 @@ object RoutingDSLSimpleServerWithMatchers2 extends App {
 
 object RoutingDSLSimpleServerWithMatchers2WithValidation extends App {
 
-  import CommonReqs._
 
   case class Color(name: String, red: Int, green: Int, blue: Int) {
     require(!name.isEmpty, "color name must not be empty")
@@ -211,7 +195,6 @@ object RoutingDSLSimpleServerWithMatchers2WithValidation extends App {
 
 object RoutingDSLPathEnd extends App {
 
-  import CommonReqs._
 
   val route =
     pathPrefix("foo") {
@@ -234,7 +217,6 @@ object RoutingDSLPathEnd extends App {
 
 object RoutingDSLPathEndOrSlash extends App {
 
-  import CommonReqs._
 
   /*
   *curl http://localhost:8080/foo
@@ -260,7 +242,6 @@ object RoutingDSLPathEndOrSlash extends App {
 
 object RoutingDSLRawPathPrefix extends App {
 
-  import CommonReqs._
 
   val completeWithUnmatchedPath =
     extractUnmatchedPath { p =>
@@ -293,7 +274,6 @@ object RoutingDSLRawPathPrefix extends App {
 
 object TwitterStreamClient extends App {
 
-  import CommonReqs._
 
   val consumerKey = ""
   val consumerSecret = ""

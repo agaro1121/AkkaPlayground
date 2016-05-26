@@ -41,11 +41,7 @@ trait AkkaHttpMicroservice {
 }
 
 object Main extends App with AkkaHttpMicroservice {
-  implicit val system = ActorSystem()
-  implicit val executor = system.dispatcher
-  implicit val materializer = ActorMaterializer()
-
-    val logger = Logging(system, getClass)
+    val logger = Logging(actorSystem, getClass)
 
   Http().bindAndHandle(routes, "localhost", 9000)
 }
