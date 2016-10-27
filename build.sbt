@@ -35,3 +35,7 @@ libraryDependencies += "com.typesafe.akka" %% "akka-persistence-query-experiment
 libraryDependencies += "com.typesafe.akka" %% "akka-typed-experimental" % akkaVersion
 
 libraryDependencies += "com.hunorkovacs" %% "koauth" % "1.1.0"
+
+libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.7.3"
+
+libraryDependencies += "de.heikoseeberger" %% "akka-http-play-json" % "1.5.3"

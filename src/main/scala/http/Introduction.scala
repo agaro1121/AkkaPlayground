@@ -275,21 +275,21 @@ object RoutingDSLRawPathPrefix extends App {
 object TwitterStreamClient extends App {
 
 
-  val consumerKey = ""
-  val consumerSecret = ""
-  val accessToken = ""
-  val accessTokenSecret = ""
+  val consumerKey = "TLXf0ms5fgivzRlWLnurKYksb"
+  val consumerSecret = "oOIS8VU9AvJwCzLBqab0Li0fTgVzW58FYgjNJIs5FbWpmiIm21"
+  val accessToken = "34363319-php29i5QpzU4yGxVt5m5NZFXl7rLop0xXsqBMy5VP"
+  val accessTokenSecret = "25kTRIK8LdN3Rkwk4cIKWhRTFXd5QUhS2uqbqxXSNCOtT"
 
   val body = "track=TheFlash"
 
   val header = RawHeader("Authorization",
     s"OAuth oauth_signature_method=HMAC-SHA1," +
-      s"oauth_signature=," + //changes
+      s"oauth_signature=IlC6Q%2FswRohoVp8yBlzoYmyCzfI%3D," + //changes
       s"oauth_consumer_key=$consumerKey," +
       s"oauth_version=1.0," +
       s"oauth_token=$accessToken," +
-      s"oauth_timestamp=," + //changes
-      s"oauth_nonce=" //changes
+      s"oauth_timestamp=1465158020," + //changes
+      s"oauth_nonce=64c45d0ea431be9fe104ea012de017c6" //changes
   )
   val connectionFlow = Http().outgoingConnectionHttps("stream.twitter.com", 443)
   val httpRequest = HttpRequest(
