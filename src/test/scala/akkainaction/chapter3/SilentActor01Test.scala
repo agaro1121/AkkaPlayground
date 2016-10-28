@@ -21,7 +21,12 @@ class SilentActor01Test extends TestKit(ActorSystem("testsystem"))
     }
 
     "change state when it receives a message, multi threaded" in {
-      fail("not implemented yet")
+      val silentActor = TestActorRef[SilentActor]
+      silentActor ! SilentMessage("whisper1")
+      silentActor ! SilentMessage("whisper2")
+      silentActor ! GetState(testActor)
+
+      expectMsg(Seq("whisper1","whisper2"))
     }
 
   }
