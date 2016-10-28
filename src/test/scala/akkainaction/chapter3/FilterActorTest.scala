@@ -53,7 +53,7 @@ class FilterActorTest extends TestKit(ActorSystem("testsystem"))
       filter ! Event(5)
       expectMsg(Event(4))
       expectMsg(Event(5))
-      expectNoMsg()
+      expectNoMsg
     }
 
   }

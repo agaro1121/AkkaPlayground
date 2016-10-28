@@ -5,7 +5,6 @@ import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives
 import org.scalatest.Matchers
-import play.api.libs.json.{Format, Json}
 import spray.json.DefaultJsonProtocol
 
 import scala.concurrent.{Await, duration}
