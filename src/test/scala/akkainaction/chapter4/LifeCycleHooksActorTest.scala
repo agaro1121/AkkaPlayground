@@ -12,7 +12,7 @@ class LifeCycleHooksActorTest extends TestKit(ActorSystem("testsystem"))
   with StopSystemAfterAll {
 
   "LifeCycleHooks Actor" must {
-    "Print out all hooks" in {
+    "Print out all lifecycle hooks" in {
       val testActorRef = system.actorOf(Props[LifeCycleHooksActor], "LifeCycleHooks")
       testActorRef ! "restart"
       testActorRef.tell("msg", testActor)
