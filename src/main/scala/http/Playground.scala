@@ -43,7 +43,7 @@ object Playground extends App {
           parameters('url.as[String]) { url ⇒ // http://localhost:8080/api/product?url=Some
             get { complete(s"url=$url") }
           }
-      } ~ path("redirect"){
+      } ~ path("redirect"){ // http://localhost:8080/api/redirect
           redirect(Uri("/api/product?url=Some"), StatusCodes.PermanentRedirect)
       } ~
         complete("Went straight to product huh")
