@@ -1,7 +1,8 @@
 package http
 
-import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.model.{StatusCodes, Uri}
 import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.Route
 
 object Playground extends App {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -42,7 +43,10 @@ object Playground extends App {
           parameters('url.as[String]) { url ⇒ // http://localhost:8080/api/product?url=Some
             get { complete(s"url=$url") }
           }
-      }
+      } ~ path("redirect"){
+          redirect(Uri("/api/product?url=Some"), StatusCodes.PermanentRedirect)
+      } ~
+        complete("Went straight to product huh")
     }
 
 
