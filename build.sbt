@@ -1,4 +1,4 @@
-name := "AkkaPlayground"
+  name := "AkkaPlayground"
 
 version := "1.0"
 
