@@ -28,7 +28,7 @@ object StreamingCopy extends App {
   val runnableGraphKeepBoth: RunnableGraph[(Future[IOResult], Future[IOResult])] = source.toMat(sink)(Keep.both)
   val runnableGraphKeepCustom: RunnableGraph[Future[Done]] = source.toMat(sink){
         //Custom function that just indicates the stream is done
-    (l,r) ⇒ Future.sequence(List(l,r)).map(_ ⇒ Done.getInstance())
+    (left, right) ⇒ Future.sequence(List(left,right)).map(_ ⇒ Done.getInstance())
   }
 
   implicit val system = ActorSystem()

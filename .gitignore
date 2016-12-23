@@ -132,3 +132,11 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+/.ensime
+/.ensime_cache/
+project/project/
+src/main/java/
+src/main/scala-2.11/
+src/test/java/
+src/test/resources/
+src/test/scala-2.11/

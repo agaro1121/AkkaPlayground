@@ -1,9 +1,0 @@
-package akkainaction.chapter6
-
-
-class TestActor extends Actor {
-
-	def receive: Receive = {
-		case _ => ???
-	}
-}
