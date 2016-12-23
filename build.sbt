@@ -34,6 +34,8 @@ libraryDependencies += "com.typesafe.akka" %% "akka-http-xml-experimental" % akk
 libraryDependencies += "com.typesafe.akka" %% "akka-persistence-query-experimental" % akkaVersion
 libraryDependencies += "com.typesafe.akka" %% "akka-typed-experimental" % akkaVersion
 
+libraryDependencies += "io.spray" %%  "spray-json" % "1.3.2"
+
 libraryDependencies += "com.hunorkovacs" %% "koauth" % "1.1.0"
 
 libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.7.3"

@@ -13,6 +13,10 @@ import scala.concurrent.Future
 
 
 object StreamingCopy extends App {
+  implicit val system = ActorSystem()
+  implicit val ec = system.dispatcher
+  implicit val mat = ActorMaterializer()
+
   val inputFile = FileSystems.getDefault.getPath("SampleInput", "ProdLogs.log")
   val outputFile = FileSystems.getDefault.getPath("SampleOutput", "ProdLogsCopy.log")
 
@@ -31,9 +35,6 @@ object StreamingCopy extends App {
     (left, right) ⇒ Future.sequence(List(left,right)).map(_ ⇒ Done.getInstance())
   }
 
-  implicit val system = ActorSystem()
-  implicit val ec = system.dispatcher
-  implicit val mat = ActorMaterializer()
 
   runnableGraph.run().foreach { ioResult =>
       println(s"${ioResult.status}, ${ioResult.count} bytes read.")
