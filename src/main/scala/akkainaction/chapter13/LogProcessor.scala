@@ -19,11 +19,11 @@ object LogProcessor extends App {
   implicit val mat = ActorMaterializer()
 
 
-  val maxLine = 100
+  val maxLine = 10000
   /* Frames the log line into a specific shape by supplied delimiter */
   val frame: Flow[ByteString, String, NotUsed] =
     Framing.delimiter(ByteString("\n"), maxLine)
-      .map(_.decodeString(StandardCharsets.UTF_8))
+      .map(_.utf8String)
 
   /* Parsing */
   val parse: Flow[String, Event, NotUsed] =
@@ -60,7 +60,7 @@ object LogProcessor extends App {
   //or one flow
   val flow : Flow[ByteString, ByteString, NotUsed] =
     Framing.delimiter(ByteString("\n"), maxLine)
-      .map(_.decodeString(StandardCharsets.UTF_8))
+      .map(_.utf8String)
       .map(Event(_))
       .collect { case Some(event) => event }
       .filter(_.state == ERROR)
