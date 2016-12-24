@@ -29,7 +29,7 @@ object State {
       case JsString("critical") => CRITICAL
       case js =>
         val msg = s"Could not deserialize $js to State."
-        deserializationError(msg)
+        throw LogParseException(msg)
     }
   }
 

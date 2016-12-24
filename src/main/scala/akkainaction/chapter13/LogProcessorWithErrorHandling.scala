@@ -6,17 +6,22 @@ import java.nio.file.StandardOpenOption.{APPEND, CREATE, WRITE}
 
 import akka.NotUsed
 import akka.actor.ActorSystem
-import akka.stream.{ActorMaterializer, IOResult}
+import akka.stream.Supervision.{Resume, Stop}
 import akka.stream.scaladsl.{FileIO, Flow, Framing, Keep, RunnableGraph, Sink, Source}
+import akka.stream._
 import akka.util.ByteString
 import spray.json.pimpAny
 
 import scala.concurrent.Future
 
-object LogProcessor extends App {
+object LogProcessorWithErrorHandling extends App {
   implicit val system = ActorSystem()
   implicit val ec = system.dispatcher
   implicit val mat = ActorMaterializer()
+  /*implicit val mat = ActorMaterializer( //Supervisor Strategy can be put here too!!!
+    ActorMaterializerSettings(system)
+      .withSupervisionStrategy(decider)
+  )*/
 
 
   val maxLine = 100
@@ -30,6 +35,7 @@ object LogProcessor extends App {
     Flow[String]
       .map(Event(_))
       .collect { case Some(event) => event } //discards blank lines
+      //.withAttributes(ActorAttributes.supervisionStrategy(decider)) // decider can be put here
 
   /* Filtering */
   val filter: Flow[Event, Event, NotUsed] =
@@ -56,6 +62,13 @@ object LogProcessor extends App {
   //composed
   val runnableGraph: RunnableGraph[Future[IOResult]] =
     source.via(composedFlow).toMat(sink)(Keep.right)
+      .withAttributes(ActorAttributes.supervisionStrategy(decider)) //error handling can go here!!!
+
+
+  val decider: Supervision.Decider = {
+    case _: LogParseException ⇒ Resume
+    case _ ⇒ Stop
+  }
 
   //or one flow
   val flow : Flow[ByteString, ByteString, NotUsed] =
@@ -65,6 +78,8 @@ object LogProcessor extends App {
       .collect { case Some(event) => event }
       .filter(_.state == ERROR)
       .map(event => ByteString(event.toJson.compactPrint))
+      .withAttributes(ActorAttributes.supervisionStrategy(decider))
+
 
 
   runnableGraph.run().foreach {
