@@ -1,24 +1,22 @@
 package akkainaction.chapter13
 
-import java.nio.file.{FileSystems, Files, Path}
 import java.nio.file.StandardOpenOption.{APPEND, CREATE, WRITE}
+import java.nio.file.{FileSystems, Files, Path}
 
-import akka.{Done, NotUsed}
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
-import akka.stream.{ActorMaterializer, IOResult}
-import akka.stream.scaladsl.{BidiFlow, FileIO, Flow, JsonFraming, Keep, Sink, Source}
-import akka.util.ByteString
-
-import scala.concurrent.Future
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.unmarshalling.FromEntityUnmarshaller
-import spray.json.DefaultJsonProtocol
-import spray.json.{pimpAny, pimpString}
+import akka.stream.scaladsl.{BidiFlow, FileIO, Flow, JsonFraming, Keep, Sink, Source}
+import akka.stream.{ActorMaterializer, IOResult}
+import akka.util.ByteString
+import akka.{Done, NotUsed}
+import spray.json.{DefaultJsonProtocol, pimpAny, pimpString}
 
+import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class LogsApi(implicit val mat: ActorMaterializer) extends DefaultJsonProtocol {
+class LogsApiWithCustomUnmarshallar(implicit val mat: ActorMaterializer) extends DefaultJsonProtocol {
 
   def logsDir: Path = FileSystems.getDefault.getPath("src/main/scala/akkainaction/chapter13/SampleOutput")
 
@@ -46,10 +44,10 @@ class LogsApi(implicit val mat: ActorMaterializer) extends DefaultJsonProtocol {
     pathPrefix("logs" / Segment) { logId ⇒
       pathEndOrSingleSlash {
         post {
-          entity(as[HttpEntity]) { entity ⇒
+          entity(as[Source[Event, _]]) { src ⇒
             onComplete(
-              entity.dataBytes
-                .via(bidiFlow)
+              src
+                .via(outFlow)
                 .toMat(logFileSink(logId))(Keep.right) //writes JSON to file
                 .run()
             ){

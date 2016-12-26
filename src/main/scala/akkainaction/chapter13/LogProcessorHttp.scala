@@ -11,7 +11,9 @@ implicit val system = ActorSystem("http-server")
   implicit val actorMaterializer = ActorMaterializer()
 
 
-  val api = new LogsApi()
+//  val api = new LogsApi()
+//  val api = new LogsApiWithCustomUnmarshallar()
+  val api = new LogsApiWithCustomUnmarshallarAndMarshaller()
 
   Http().bindAndHandle(api.route, "localhost", 9000)
 

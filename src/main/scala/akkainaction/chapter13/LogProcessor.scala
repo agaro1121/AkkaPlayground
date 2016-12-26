@@ -41,8 +41,10 @@ object LogProcessor extends App {
     Flow[Event]
       .map(event => ByteString(event.toJson.compactPrint))
 
+  val inFLow = frame via parse via filter
+
   val composedFlow: Flow[ByteString, ByteString, NotUsed] =
-    frame via parse via filter via serialize
+    inFLow via serialize
 
   val inputFile = FileSystems.getDefault.getPath("src/main/scala/akkainaction/chapter13/SampleInput", "logs.log")
   val outputFile = FileSystems.getDefault.getPath("src/main/scala/akkainaction/chapter13/SampleOutput", "jsonLogs.log")

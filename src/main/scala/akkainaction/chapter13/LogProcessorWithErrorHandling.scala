@@ -59,16 +59,17 @@ object LogProcessorWithErrorHandling extends App {
   val sink: Sink[ByteString, Future[IOResult]] =
     FileIO.toPath(outputFile, Set(CREATE, WRITE, APPEND))
 
+  val decider: Supervision.Decider = {
+    case _: LogParseException ⇒ Resume
+    case _ ⇒ Stop
+  }
+
   //composed
   val runnableGraph: RunnableGraph[Future[IOResult]] =
     source.via(composedFlow).toMat(sink)(Keep.right)
       .withAttributes(ActorAttributes.supervisionStrategy(decider)) //error handling can go here!!!
 
 
-  val decider: Supervision.Decider = {
-    case _: LogParseException ⇒ Resume
-    case _ ⇒ Stop
-  }
 
   //or one flow
   val flow : Flow[ByteString, ByteString, NotUsed] =
