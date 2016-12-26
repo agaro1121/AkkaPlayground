@@ -6,14 +6,15 @@ import akka.stream.ActorMaterializer
 
 object LogProcessorHttp extends App {
 
-implicit val system = ActorSystem("http-server")
+  implicit val system = ActorSystem("http-server")
   implicit val ex = system.dispatcher
   implicit val actorMaterializer = ActorMaterializer()
 
 
-//  val api = new LogsApi()
-//  val api = new LogsApiWithCustomUnmarshallar()
-  val api = new LogsApiWithCustomUnmarshallarAndMarshaller()
+  //  val api = new LogsApi()
+  //  val api = new LogsApiWithCustomUnmarshallar()
+  //  val api = new LogsApiWithCustomUnmarshallarAndMarshaller()
+  val api = new LogsApiWithFanOut()
 
   Http().bindAndHandle(api.route, "localhost", 9000)
 

@@ -45,7 +45,7 @@ object EventUnmarshaller {
                 Flow[Event]
                   .filter(_.state == ERROR)
 
-              val inFlow: Flow[ByteString, Event, NotUsed] = frame via parse via filter
+              val inFlow: Flow[ByteString, Event, NotUsed] = frame via parse
 
               Future.successful(inFlow)
 

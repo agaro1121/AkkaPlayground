@@ -20,6 +20,12 @@ object Magnet {
       override type Result = Int
       override def apply(): Result = somethingElse.i
     }
+
+  implicit def fromBoth(tuple: (Something, SomethingElse)): Magnet =
+    new Magnet {
+      override type Result = Int
+      override def apply(): Result = tuple._1.i + tuple._2.i
+    }
 }
 
 case class Something(s: String, i: Int)
@@ -40,5 +46,7 @@ object Main extends App {
 
   println(doSomethingWithMagnet(s))
   println(doSomethingWithMagnet(se))
+  println(doSomethingWithMagnet(s, se))
+
 
 }

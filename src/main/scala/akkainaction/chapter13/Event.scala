@@ -58,9 +58,8 @@ object Event extends DefaultJsonProtocol with SprayJsonSupport {
 
   def apply(s: String): Option[Event] = {
     val parts: Array[String] = s.split("\\|")
-    println("***parts="+parts.mkString(","))
     if(parts.length == 5) {
-      Some(Event(parts(0), parts(1), State(parts(2).replaceAll("\\s","")).get, parts(3), parts(4)))
+      Some(Event(parts(0), parts(1), State(parts(2).replaceAll("\\s","").trim).get, parts(3), parts(4)))
     } else {
       println(s"**** could not parse $s")
       None
