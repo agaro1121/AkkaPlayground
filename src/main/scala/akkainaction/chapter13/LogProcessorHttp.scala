@@ -14,7 +14,8 @@ object LogProcessorHttp extends App {
   //  val api = new LogsApi()
   //  val api = new LogsApiWithCustomUnmarshallar()
   //  val api = new LogsApiWithCustomUnmarshallarAndMarshaller()
-  val api = new LogsApiWithFanOut()
+//  val api = new LogsApiWithFanOut()
+  val api = new LogsApiWithFanIn()
 
   Http().bindAndHandle(api.route, "localhost", 9000)
 
