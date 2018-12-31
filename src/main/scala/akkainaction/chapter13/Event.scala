@@ -1,7 +1,6 @@
 package akkainaction.chapter13
 
 
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import spray.json.{DefaultJsonProtocol, JsString, JsValue, JsonFormat, RootJsonFormat, deserializationError}
 
 /* Sample Input
@@ -52,7 +51,7 @@ case class Event(
   metric: Option[Double] = None
 )
 
-object Event extends DefaultJsonProtocol with SprayJsonSupport {
+object Event extends DefaultJsonProtocol {
 
   implicit val json: RootJsonFormat[Event] = jsonFormat7(Event.apply)
 

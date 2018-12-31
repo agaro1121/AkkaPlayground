@@ -3,6 +3,7 @@ package akkainaction.chapter13
 import java.nio.file.StandardOpenOption.{APPEND, CREATE, WRITE}
 import java.nio.file.{FileSystems, Files, Path}
 
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
@@ -11,12 +12,12 @@ import akka.stream.scaladsl.{BidiFlow, FileIO, Flow, JsonFraming, Keep, Sink, So
 import akka.stream.{ActorMaterializer, IOResult}
 import akka.util.ByteString
 import akka.{Done, NotUsed}
-import spray.json.{DefaultJsonProtocol, pimpAny, pimpString}
+import spray.json._
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class LogsApiWithCustomUnmarshallar(implicit val mat: ActorMaterializer) extends DefaultJsonProtocol {
+class LogsApiWithCustomUnmarshallar(implicit val mat: ActorMaterializer) extends SprayJsonSupport with DefaultJsonProtocol {
 
   def logsDir: Path = FileSystems.getDefault.getPath("src/main/scala/akkainaction/chapter13/SampleOutput")
 

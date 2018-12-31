@@ -10,7 +10,7 @@ import akka.stream.Supervision.{Resume, Stop}
 import akka.stream._
 import akka.stream.scaladsl.{BidiFlow, FileIO, Flow, Framing, JsonFraming, Keep, RunnableGraph, Sink, Source}
 import akka.util.ByteString
-import spray.json.{pimpString, pimpAny}
+import spray.json._
 import spray.json.DefaultJsonProtocol
 import scala.concurrent.Future
 

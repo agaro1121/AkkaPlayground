@@ -6,7 +6,7 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.stream.scaladsl.JsonFraming
 import akka.stream.scaladsl.{Flow, Framing, Source}
 import akka.util.ByteString
-import spray.json.pimpString
+import spray.json._
 
 object EventMarshallar {
 

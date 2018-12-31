@@ -145,14 +145,12 @@ object DifferentWaysToWire extends App {
 }
 
 object FusingOperators extends App {
-  import akka.stream.Fusing
   import CommonReqs._
 
   val flow = Flow[Int].map(_ * 2).filter(_ > 500) //this can be done asynchronously across different actors
-  val fused = Fusing.aggressive(flow) //this will be executed in the same actor
 
   Source.fromIterator { () => Iterator from 0 }
-    .via(fused)
+    .via(flow)
     .take(1000) //take first 1000 elements that fit criteria. Stops at 2500
       .runForeach(println)
 

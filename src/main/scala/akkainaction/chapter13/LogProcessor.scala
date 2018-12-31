@@ -9,7 +9,7 @@ import akka.actor.ActorSystem
 import akka.stream.{ActorMaterializer, IOResult}
 import akka.stream.scaladsl.{FileIO, Flow, Framing, Keep, RunnableGraph, Sink, Source}
 import akka.util.ByteString
-import spray.json.pimpAny
+import spray.json._
 
 import scala.concurrent.Future
 

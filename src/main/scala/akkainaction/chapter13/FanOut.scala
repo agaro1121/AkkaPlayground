@@ -6,7 +6,7 @@ import akka.NotUsed
 import akka.stream.scaladsl.{Broadcast, FileIO, Flow, GraphDSL, Sink, Source}
 import akka.stream._
 import akka.util.ByteString
-import spray.json.pimpAny
+import spray.json._
 
 import scala.concurrent.Future
 import java.nio.file.StandardOpenOption.{APPEND, CREATE, WRITE}

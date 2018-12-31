@@ -7,7 +7,7 @@ import akka.http.scaladsl.unmarshalling.Unmarshaller.UnsupportedContentTypeExcep
 import akka.stream.Materializer
 import akka.stream.scaladsl.{Flow, Framing, JsonFraming, Source}
 import akka.util.ByteString
-import spray.json.pimpString
+import spray.json._
 
 import scala.concurrent.{ExecutionContext, Future}
 
